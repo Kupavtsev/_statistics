@@ -1,0 +1,13 @@
+_fromExcel_toshib/__pycache__
+
+accounts/__pycache__
+accounts/migrations
+
+appstat/__pycache__
+appstat/migrations
+
+server/__pycache__
+server/migrations
+
+venv_stat
+cmd.exe.lnk
