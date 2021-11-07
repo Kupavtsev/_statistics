@@ -1,6 +1,7 @@
+import datetime
 import pandas as pd
 import os
-import time
+# import time
 import sys
 
 # Path to file
@@ -12,20 +13,21 @@ except:
     print('I cand find Excel file')
 
 # reading excel file
+start_time = datetime.datetime.now()
+print('Start reading excel file...')
 EXCEL_SHEET = pd.read_excel(abs_file_path, sheet_name='Лист1',
                         names=['count_num', 'num', 'date', 'ses_date','time', 'instrument',
                         'price', 'quantity', 'volume', 'transaction'],
                         converters={"time": str,
                         "price": str})
+end_time = datetime.datetime.now()
+time_delta = end_time - start_time
+print("Reading finished. It's took: ", time_delta.seconds, ' seconds')
 
-
-# Global vars
-LIST_ALL_EXCEL_SHEET: list = []
-RESULTED_LIST_EN: list = []
-RESULTED_LIST_PRICE: list = []
 
 # list all deals from Data Frame
 def df_to_list(excel_sheet=EXCEL_SHEET):
+    list_all_excel_sheet: list = []
     for index, rows in excel_sheet.iterrows():
         # print(index, rows)
         # rows.num
@@ -33,69 +35,64 @@ def df_to_list(excel_sheet=EXCEL_SHEET):
                         rows.ses_date, rows.time,
                         rows.instrument, rows.price,
                         rows.quantity, rows.transaction]
-        b = ("Loading: " + str(my_list[0]))
+        b = ("Transfer to list from Pandas Data Frame: " + str(my_list[0]))
         sys.stdout.write('\r'+b)
-        LIST_ALL_EXCEL_SHEET.append(my_list)
+        list_all_excel_sheet.append(my_list)
+    return list_all_excel_sheet
 
+
+
+
+
+def convert_data_forDB(deals_from_excel):
+    resulted_list: list = []
+    # Change transaction to latin
+    for el in deals_from_excel:
+        # print(el)
+        if el[7] == 'Купля':
+            # print(el[6])
+            el[7] = 'Bought'
+        elif el[7] == 'Продажа':
+            el[7] = 'Sold'
+        else:
+            print('SOME ERROR IN KIRILITSA')
+
+    # Leave only RIZ1
+    for deal in deals_from_excel:
+        if deal[4] == 'RIZ1 [ФОРТС фьючерсы]':
+            deal[4] = 'RIZ1'
+            resulted_list.append(deal)
+
+
+    # Change Price to int
+    for price in resulted_list:
+        int_price = price[5][:3] + price[5][4:]
+        price[5] = int(int_price)
+
+    COUNT: int = 1
+    for quantity in resulted_list:
+        quantity[0] = COUNT
+        COUNT += 1 
+    
+    return resulted_list
 
 # list all deals from Data Frame
-df_to_list(EXCEL_SHEET)
+# deals_from_excel = df_to_list(EXCEL_SHEET)
 
-
-
-# Change transaction to latin
-for el in LIST_ALL_EXCEL_SHEET:
-    # print(el)
-    if el[7] == 'Купля':
-        # print(el[6])
-        el[7] = 'Bought'
-    elif el[7] == 'Продажа':
-        el[7] = 'Sold'
-    else:
-        print('SOME ERROR IN KIRILITSA')
-
-# Leave only RIZ1
-for deal in LIST_ALL_EXCEL_SHEET:
-    if deal[4] == 'RIZ1 [ФОРТС фьючерсы]':
-        deal[4] = 'RIZ1'
-        RESULTED_LIST_EN.append(deal)
-        # LIST_ALL_EXCEL_SHEET.remove(deal)
-
-LIST_ALL_EXCEL_SHEET.clear()
-
-# Change Price to int
-for price in RESULTED_LIST_EN:
-    int_price = price[5][:3] + price[5][4:]
-    price[5] = int(int_price)
-    # RESULTED_LIST_PRICE.append(price)
-
-COUNT: int = 1
-for quantity in RESULTED_LIST_EN:
-    quantity[0] = COUNT
-    COUNT += 1 
-
-
-
-
+resulted_list = convert_data_forDB(df_to_list(EXCEL_SHEET))
 
 # show result in console
 print()
-print('LIST_ALL_EXCEL_SHEET len: ', len(LIST_ALL_EXCEL_SHEET))
-print('LIST_ALL_EXCEL_SHEET: ', LIST_ALL_EXCEL_SHEET[0:4])
-print('RESULTED_LIST_EN len: ', len(RESULTED_LIST_EN))
-print('RESULTED_LIST_EN: ', RESULTED_LIST_EN[40:44])
-# print('RESULTED_LIST_PRICE len: ', len(RESULTED_LIST_PRICE))
-# print('RESULTED_LIST_PRICE: ', RESULTED_LIST_PRICE[0:4])
-
-
+print('resulted_list len: ', len(resulted_list))
+print('resulted_list: ', resulted_list[40:44])
 
 
 
 # Save to file ri_deals.py
-def save_deals(deals_list=LIST_ALL_EXCEL_SHEET):
-    with open('ri_deals.py', 'w') as f:
-        f.write(str(LIST_ALL_EXCEL_SHEET))
-        print('Data rewritred and saved to ri_deals.py')
+# def save_deals(deals_list):
+#     with open('ri_deals.py', 'w') as f:
+#         f.write(str(deals_list))
+#         print('Data rewritred and saved to ri_deals.py')
 
 # Save to file ri_deals.py
 # save_deals()
