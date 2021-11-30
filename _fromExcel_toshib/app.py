@@ -103,7 +103,7 @@ def each_deal_list(deals):
             pass
             print('This is not RIZ1')
     except:
-        print('THERE IS NO COOERCT CASE FOR THIS ONE')
+        print('THERE IS NO CORRECT CASE FOR THIS ONE')
 
 
 def save_deals(result):
