@@ -1,3 +1,6 @@
+"""
+Getting data from tofile_ri_tape.py and put this data to postgresQL
+"""
 import psycopg2
 import datetime
 # from account import user_login, user_pass

@@ -1,3 +1,7 @@
+"""
+This is to send my data deals to Postgres
+"""
+
 import psycopg2
 import datetime
 from pandas import Timestamp
@@ -6,8 +10,9 @@ from pandas import Timestamp
 from config import PG_LOGIN, PG_PASSWORD
 
 resulted_list = [
-    [1, Timestamp('2021-10-19 00:00:00'), '2021-10-19 00:00:00', datetime.time(19, 0, 1), 'RIZ1', 189400, 1 , 'Bought'],
-    [2, Timestamp('2021-10-19 00:00:00'), '2021-10-19 00:00:00', datetime.time(18, 10, 11), 'RIZ1', 189550, 1 , 'Sold']
+    {'instrument': 'RIZ1', 'open_date': Timestamp('2021-09-28 00:00:00'), 'close_date': Timestamp('2021-09-28 00:00:00'), 'open_time': '10:56:56', 'close_time': '11:09:21', 'time_in_position': datetime.timedelta(seconds=745), 'transaction': 'Bought', 'quantity': 1, 'enter_price': 176450, 'exit_price': 176230, 'deal_result': -220, 'commission': 11.2},
+    {'instrument': 'RIZ1', 'open_date': Timestamp('2021-09-28 00:00:00'), 'close_date': Timestamp('2021-09-28 00:00:00'), 'open_time': '11:27:17', 'close_time': '11:29:40', 'time_in_position': datetime.timedelta(seconds=143), 'transaction': 'Bought', 'quantity': 1, 'enter_price': 175510, 'exit_price': 175510, 'deal_result': 0, 'commission': 11.2},
+    {'instrument': 'RIZ1', 'open_date': Timestamp('2021-09-28 00:00:00'), 'close_date': Timestamp('2021-09-28 00:00:00'), 'open_time': '11:29:56', 'close_time': '11:32:45', 'time_in_position': datetime.timedelta(seconds=169), 'transaction': 'Bought', 'quantity': 1, 'enter_price': 175470, 'exit_price': 176070, 'deal_result': 600, 'commission': 11.2},
     ]
 
 # To put this number in first brackets
@@ -31,36 +36,51 @@ def add_to_base(dict_my):
 
 
     for el in dict_my:
-        count_num = el[0]
-        date = el[1]
-        ses_date = el[2]
-        time = el[3]
-        instrument = el[4]
-        price = el[5]
-        quantity = el[6]
-        transaction = el[7]
+        instrument = el['instrument']
+        open_date = el['open_date']
+        close_date = el['close_date']
+        open_time = el['open_time']
+        close_time = el['close_time']
+        time_in_position = el['time_in_position']
+        transaction = el['transaction']
+        quantity = el['quantity']
+        enter_price = el['enter_price']
+        exit_price = el['exit_price']
+        deal_result = el['deal_result']
+        commission = el['commission']
 
         cur.execute( # 'cur' object calls the 'execute' method 
-            """INSERT INTO public.rts_future_deals(
-                count_num, date, ses_date, time, instrument, price, quantity, transaction) VALUES (
-                    %(count_num)s,
-                    %(date)s,
-                    %(ses_date)s,
-                    %(time)s,
+            """INSERT INTO public.rts_future_mydeals(
+                instrument, open_date, close_date, open_time, close_time,
+                time_in_position, transaction, quantity, enter_price,
+                exit_price, deal_result, commission
+                ) VALUES (
                     %(instrument)s,
-                    %(price)s,
+                    %(open_date)s,
+                    %(close_date)s,
+                    %(open_time)s,
+                    %(close_time)s,
+                    %(time_in_position)s,
+                    %(transaction)s,
                     %(quantity)s,
-                    %(transaction)s
+                    %(enter_price)s,
+                    %(exit_price)s,
+                    %(deal_result)s,
+                    %(commission)s
                 )""",
                 {
-                'count_num' : count_num,
-                'date' : date,
-                'ses_date' : ses_date,
-                'time' : time,
                 'instrument' : instrument,
-                'price' : price,
-                'quantity' : quantity,
+                'open_date' : open_date,
+                'close_date' : close_date,
+                'open_time' : open_time,
+                'close_time' : close_time,
+                'time_in_position' : time_in_position,
                 'transaction' : transaction,
+                'quantity' : quantity,
+                'enter_price' : enter_price,
+                'exit_price' : exit_price,
+                'deal_result' : deal_result,
+                'commission' : commission
                 }
         )
     conn.commit()

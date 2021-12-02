@@ -1,3 +1,13 @@
+"""
+    Importing deals.py, convert data for database structure and save it in RESULT.PY as list
+    It's contain only sign about deal in the list
+    
+    DONT'T FORGOT TO OPEN SAVING FUNCTION....
+
+    from pandas import Timestamp
+    from datetime import datetime
+    result = 
+"""
 from datetime import datetime
 
 result = []
@@ -11,7 +21,7 @@ def each_deal_list(deals):
 
     # All this vars only in case we have open position from first deal
     instrument  = prepared[0][2]
-    side        = prepared[0][3]
+    transaction = prepared[0][3]
     quantity    = prepared[0][6]
     enter_price = prepared[0][5]
     commission  = prepared[0][7]
@@ -19,16 +29,16 @@ def each_deal_list(deals):
     close_date  = prepared[1][0]
     open_time   = prepared[0][1]
     close_time  = prepared[1][1]
-    format      = '%H:%M:%S'
-    # deal_result = prepared[1][5] - enter_price if side == 'Bought' else enter_price - prepared[1][5]
+    fmt      = '%H:%M:%S'
+    # deal_result = prepared[1][5] - enter_price if transaction == 'Bought' else enter_price - prepared[1][5]
     # print(prepared[0:2])
     try:
         # checking instrument to be same
         if instrument == prepared[1][2]:
             # print('the same instrument', prepared[0][2])
             
-            # checking for transaction side
-            if side != prepared[1][3]:
+            # checking for transaction transaction
+            if transaction != prepared[1][3]:
                 # print('This two deals opposite')
                 
                 # checking for quantity in this deals
@@ -36,8 +46,9 @@ def each_deal_list(deals):
                     # print('We have the same quantity')
                     # Calculations for total closed deal information
 
-                    deal_result = prepared[1][5] - enter_price if side == 'Bought' else enter_price - prepared[1][5]
-                    time_in_position = datetime.strptime(close_time, format) - datetime.strptime(open_time, format)
+                    deal_result = prepared[1][5] - enter_price if transaction == 'Bought' else enter_price - prepared[1][5]
+                    time_in_position = datetime.strptime(close_time, fmt) - datetime.strptime(open_time, fmt)
+                    commission_total = format(commission + prepared[1][7] + 0.9, '.2f')
                     
                     finished_deal = {
                         'instrument': instrument,
@@ -46,12 +57,12 @@ def each_deal_list(deals):
                         'open_time' : open_time,
                         'close_time': close_time,
                         'time_in_position' : time_in_position,
-                        'side' : side,
+                        'transaction' : transaction,
                         'quantity' : quantity,
                         'enter_price' : enter_price,
                         'exit_price' : prepared[1][5],
                         'deal_result'    : deal_result,
-                        'commission' : commission + prepared[1][7]
+                        'commission' : commission_total
                     }
 
                     # print('finished_deal', finished_deal)
@@ -71,8 +82,9 @@ def each_deal_list(deals):
                         # print('counter_perevorot ',counter_perevorot)
                         # print('counter_perevorot_list ',counter_perevorot_list)
 
-                        deal_result = prepared[1][5] - enter_price if side == 'Bought' else enter_price - prepared[1][5]
-                        time_in_position = datetime.strptime(close_time, format) - datetime.strptime(open_time, format)
+                        deal_result = prepared[1][5] - enter_price if transaction == 'Bought' else enter_price - prepared[1][5]
+                        time_in_position = datetime.strptime(close_time, fmt) - datetime.strptime(open_time, fmt)
+                        # commission_total = commission + prepared[1][7] + 0.9
                     
                         finished_deal = {
                             'instrument': instrument,
@@ -81,12 +93,12 @@ def each_deal_list(deals):
                             'open_time' : open_time,
                             'close_time': close_time,
                             'time_in_position' : time_in_position,
-                            'side' : side,
+                            'transaction' : transaction,
                             'quantity' : quantity,
                             'enter_price' : enter_price,
                             'exit_price' : prepared[1][5],
                             'deal_result'    : deal_result,
-                            'commission' : commission + prepared[1][7]
+                            'commission' : format(commission + prepared[1][7] + 0.9, '.2f')
                         }
 
                         # print('finished_deal', finished_deal)
@@ -110,7 +122,7 @@ def save_deals(result):
     with open('result.py', 'w') as f:
         # You need to make writing from 4th string
         f.write(str(result))
-        print('Data rewritred and saved to deals.py')
+        print('Data rewritred and saved to result.py')
 
 
 

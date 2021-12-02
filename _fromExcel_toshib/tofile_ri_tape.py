@@ -54,13 +54,13 @@ def convert_data_forDB(deals_from_excel):
     # Change transaction to latin
     
     # This is conver pandas.timestamp to datetime.datetime
-    # format = '%Y-%m-%d %H:%M:%S'
+    # fmt = '%Y-%m-%d %H:%M:%S'
     # for date_el in deals_from_excel:
     #     need_to_change = str(date_el[1])
     #     # print(type(date_el[1]))
-    #     date_el[1] = datetime.datetime.strptime(need_to_change, format)
+    #     date_el[1] = datetime.datetime.strptime(need_to_change, fmt)
     #     # print(type(date_el[1]))
-    #     date_el[2] = datetime.datetime.strptime(need_to_change, format)
+    #     date_el[2] = datetime.datetime.strptime(need_to_change, fmt)
 
     # for date_el in deals_from_excel:
 

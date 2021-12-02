@@ -1,12 +1,19 @@
 1. My Deals
 app_tofile.py
-    It's reading excel file (DEALS.XLSX) with my deals and put result to file DEALS.PY as list.
+    It's reading excel file (DEALS.XLSX) with my deals and put result to file DEALS.
+    "from pandas import Timestamp
+    deals = ..."
+    PY as list.
     It would contain all deals, like open and Close postion
+    DONT'T FORGOT TO OPEN SAVING FUNCTION....
 
 app.py 
     Importing deals.py, convert data for database structure and save it in RESULT.PY as list
+    from pandas import Timestamp
+    from datetime import datetime
     It's contain only sign about deal in the list
 
+Maybe I should restructure this to different folders...
 
 2. Market Deals
 tofile_ri_tape.py

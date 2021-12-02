@@ -1,8 +1,31 @@
+"""
+It's reading excel file (DEALS.XLSX) with my deals and put result to file DEALS.
+PY as list.
+It would contain all deals, like open and Close postion
+
+DONT'T FORGOT TO OPEN SAVING FUNCTION....
+
+
+from pandas import Timestamp
+deals = ...
+"""
+import os
 import pandas as pd
 
-#
-EXCEL_SHEET = pd.read_excel('deals.xlsx', sheet_name='Sheet1',
+
+# Path to file
+try:
+    script_dir = os.path.dirname(__file__) #<-- absolute dir the script is in
+    rel_path = "D:/it_locale/python_projects_env/_statistics/_fromExcel_toshib/deals.xlsx"
+    abs_file_path = os.path.join(script_dir, rel_path)
+except:
+    print('I cand find Excel file')
+
+
+print('\n\n\nStart reading excel file...')
+EXCEL_SHEET = pd.read_excel(abs_file_path, sheet_name='Sheet1',
                       converters={"time": str, "price" : int})
+print("Reading finished. It's took: ", end='\n')
 
 
 LIST_ALL_EXCEL_SHEET: list = []
@@ -34,5 +57,7 @@ def save_deals(deals_list=LIST_ALL_EXCEL_SHEET):
     with open('deals.py', 'w') as f:
         f.write(str(LIST_ALL_EXCEL_SHEET))
         print('Data rewritred and saved to deals.py')
+
+
 
 # save_deals()
