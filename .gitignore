@@ -1,3 +1,8 @@
+# Environments
+.env
+_fromExcel_toshib/.env
+
+/*/__pycache__/
 _fromExcel_toshib/__pycache__
 
 accounts/__pycache__

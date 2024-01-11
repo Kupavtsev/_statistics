@@ -8,6 +8,7 @@ import sys
 try:
     script_dir = os.path.dirname(__file__) #<-- absolute dir the script is in
     rel_path = "D:/Dropbox/TRADING/_deals_for_python/ri_221021.xlsx"
+    # rel_path = home/...
     abs_file_path = os.path.join(script_dir, rel_path)
 except:
     print('I cand find Excel file')
